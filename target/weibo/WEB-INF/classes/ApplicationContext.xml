@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+
+	<!--对web包中的所有类进行扫描，除做了<context:annotation-config />功能外，还完成Bean创建和自动依赖注入的功能  -->
+	<context:component-scan base-package="com.core.dao" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service" />
+	</context:component-scan>
+	
+	<!-- 对已经注册的bean spring配置文件中配置bean 开启@Autowired @Required等注解 -->
+	<import resource="classpath:weibo-dao.xml"/>
+	<!-- 数据访问层配置 -->
+	<!--服务层配置 -->
+	<!--定时器 -->
+</beans>

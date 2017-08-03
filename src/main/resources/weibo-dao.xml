@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="GBK" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+
+	<context:property-placeholder location="classpath:jdbc.properties" />
+
+	<!-- <bean id="dataSource" -->
+	<!-- class="com.web.core.dao.BaseSecDataSource" -->
+	<!-- destroy-method="close" -->
+	<!-- p:driverClassName="${jdbc.driverClassName}" -->
+	<!-- p:url="${jdbc.url}" -->
+	<!-- p:username="${jdbc.username}" -->
+	<!-- p:password="${jdbc.password}" /> -->
+	<bean id="transactionManager" 
+            class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!-- 注入数据库连接池 -->
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class = "true"/>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${driverName}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${user}" />
+		<property name="password" value="${password}" />
+
+		<!-- 连接池启动时的初始值 -->
+		<property name="initialSize" value="10" />
+		<!-- 连接池的最大值 -->
+		<property name="maxActive" value="100" />
+		<!-- 最大空闲值.当经过一个高峰时间后，连接池可以慢慢将已经用不到的连接慢慢释放一部分，一直减少到maxIdle为止 -->
+		<property name="maxIdle" value="100" />
+		<!-- 最小空闲值.当空闲的连接数少于阀值时，连接池就会预申请去一些连接，以免洪峰来时来不及申请 -->
+		<property name="minIdle" value="10" />
+
+		<!--#给出一条简单的sql语句进行验证 -->
+		<property name="validationQuery" value="select 1" />
+		<!--#在取出连接时进行有效验证 -->
+		<property name="testOnBorrow" value="false" />
+		<!-- 空闲时是进行验证，检查对象是否有效 -->
+		<property name="testWhileIdle" value="true" />
+		<!-- 运行'判断连接过长任务'的时间间隔，单位为毫秒，默认为-1，即不执行任务。7*60*60*1000= 5200000 -->
+		<property name="timeBetweenEvictionRunsMillis" value="5200000" />
+		<!-- 连接的时间过长，默认为半小时。30*60*1000 = 1800000 -->
+		<property name="minEvictableIdleTimeMillis" value="1800000" />
+		<!-- 连接池收回空闲的活动连接时是否打印消息 -->
+		<property name="logAbandoned" value="true" />
+	</bean>
+
+	
+	<!-- 声明JDBC模板类 -->
+	
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+</beans>
